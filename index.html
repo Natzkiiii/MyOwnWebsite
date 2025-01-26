@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello there :3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0b3b42;
+            color: #007b8c;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #C8C4BD;
+        }
+        a {
+            color: #C8C4BD;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        p, li {
+            color: #5FEDFF;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .section {
+            padding: 10px;
+            background-color: #0F525A;
+            border: 1px solid #7F7669;
+            border-radius: 5px;
+        }
+
+        hr {
+            background-color: #0F525A;
+        }
+        .section ul {
+            padding-left: 20px;
+        }
+        .section ul li {
+            margin-bottom: 10px;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #146D78;
+            border: 2px solid #80deea;
+            border-radius: 10px;
+        }
+    </style>
+    <script>
+        let doScroll = false;
+
+        const doLastFM = () => { // Fetch the data from the Last.fm API
+            fetch("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=natzkii&api_key=06d0d8612eb7df299bb2f19bec2cb449&format=json")
+            .then((response) => {
+                if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`); // Error handling
+                }
+                return response.json(); 
+            })
+            .then((data) => { // Handle the data
+                const track = data?.recenttracks?.track?.[0]; // Safely access the track object
+                const ballsElement = document.getElementById("balls");
+                const linkElement = document.getElementById("linkedBalls");
+
+                if (track) {
+                const artistName = track.artist["#text"];
+                const songName = track.name;
+                const url = track.url;
+
+                if (track["@attr"]?.nowplaying) { // Check if the track is currently playing
+                    ballsElement.textContent = `"${songName}" by "${artistName}" (Now Playing)`; // it'll show the current song
+                } else { //if it isn't playing, then...
+                    ballsElement.textContent = `"${songName}" by "${artistName}" (Last Played)`; // it'll show the last played song
+                }
+
+                linkElement.href = url;
+                doScroll = true;
+                } else { // If there are no tracks
+                ballsElement.textContent = "...nothing..."; // deafening silence...
+                linkElement.href = "#";
+                doScroll = false;
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+        };
+
+        const updateScrollingText = () => {
+            if (!doScroll) return;
+
+            const textElement = document.getElementById("linkedBalls");
+            const parentElement = textElement.parentNode.parentNode;
+
+            if (!textElement.style.left) {
+            textElement.style.left = `${parentElement.offsetWidth}px`;
+            }
+
+            textElement.style.left = `${parseInt(textElement.style.left, 10) - 1}px`;
+
+            if (parseInt(textElement.style.left, 10) + textElement.offsetWidth < 0) {
+            textElement.style.left = `${parentElement.offsetWidth}px`;
+            }
+        };
+
+        window.onload = () => {
+            const textElement = document.getElementById("linkedBalls");
+            textElement.style.left = "0px";
+
+            setInterval(updateScrollingText, 10); // Scrolling speed
+            setInterval(() => {
+            const previousText = document.getElementById("balls").textContent;
+            doLastFM();
+            const currentText = document.getElementById("balls").textContent;
+            if (previousText !== currentText) {
+                document.getElementById("balls").textContent = "...loading...";
+            }
+            }, 1000); // Update frequency
+
+            doLastFM();
+        };
+
+		</script>
+</head>
+
+<body style="backgound-color:rgb(50, 50, 75);">
+    <div class="container">
+        <header style="text-align: center;">
+            <h1>Natzkii's protfolio</h1>
+            <div id="player">
+                <a id="linkedBalls" href="#" style="position: absolute; white-space: nowrap;">
+                    <i id="balls">...loading...</i>
+                </a>
+            </div>
+        </header>
+
+        <div class="section">
+            <h2>About Me</h2>
+            <p>Hello! I'm Natzkii. I enjoy web development and creating cool stuff!</p>
+            <ul>
+                <li>Role: Aspiring Professional Developer (working on getting a degree</li>
+                <li>Experience: ~7+ years</li>
+                <li>Fun Fact: I know stuff you don't know</li>
+
+            </ul>
+            <p>
+                you are on the second version of Natzkii.rf.gd. if you wanna see earlier versions, then go on and click the links below<br>
+                2. Version
+                <a href="version1.html">1. Version</a>
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Find Me</h2>
+            <ul>
+                <li><a href="https://github.com/Natzkiiii">GitHub</a></li>
+                <i>some more might be added in the future</i>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Projects</h2>
+            <ul>
+                <li>
+                    <p><b>Project 1:</b> <a href="https://github.com/Natzkiiii/R-aa">R-aa</a> <i>written in: Python 3.9.6</i></p>
+                    <p>A lightweight class, built in python that randomizes arrays</p>
+                    <hr>
+                </li>
+                <li>
+                    <p><b>Project 2:</b> <a href="#">Watching Capybaras</a> <i>written in: Unity's c#</i></p>
+                    <p>A simple unity game, that has capybaras!</p>
+                    <hr>
+                </li>
+                <li>
+                    <p><b>Project 3:</b> <a href="#">The most eco friendly script (tmefs)</a> <i>written in: Python 3.9.6</i></p>
+                    <p>
+                        A request script written in python, that asks stuff in ecosia, to help the environment.
+                        <hr>
+                    </p>
+                </li>
+                <li>
+                    <p><b>Project 4:</b> <a href="https://github.com/Natzkiiii/KeyspammerAutoclicker/">Natzki's Autoclicker&Keyspammer</a> <i>written in: Python 3.9.6</i></p>
+                    <p>
+                        A highly customizable keyspammer and autoclicker, that is made in python.
+                        
+                    </p>
+                </li>
+                
+            </ul>
+        </div>
+        <div class="section">
+            <h2>Contact me</h2>
+            <ul>
+                <i>currently it is only per github, because i don't want my discord to be spammed</i>
+            </ul>
+    </div>
+
+    <footer class="footer">
+        <p>Natzkii's protfolio &copy; 2024 | Created by Natzki</p>
+    </footer>
+</body>
+</html>
